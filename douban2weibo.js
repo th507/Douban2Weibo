@@ -6,6 +6,7 @@
 // @include       http://book.douban.com/subject/*
 // @description  分享豆瓣条目至新浪微博
 // @author 	xydonkey, +C
+// @version	0.5
 // under GPL 3.0 Lisence.
 // ==/UserScript==
 
