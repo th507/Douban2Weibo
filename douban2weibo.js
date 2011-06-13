@@ -32,9 +32,9 @@ function getTitle(){
 	return $("/h1")[0].firstElementChild.innerHTML;
 }
 
-//评分：力荐、推荐、还行、较差、很差、默认值是空字符串
+//评分：力荐、推荐、还行、较差、很差、默认值是空(句号)
 function getRating(){
-    var ratingTable ={'5':'，力荐。','4':'，推荐。','3':'，还行。','2':'，较差。','1':'，很差。','':''};
+    var ratingTable ={'5':'，力荐。','4':'，推荐。','3':'，还行。','2':'，较差。','1':'，很差。','':'。'};
     if ($("#n_rating")){
         var rate=$("#n_rating").value;
         return rateword=ratingTable[rate];
