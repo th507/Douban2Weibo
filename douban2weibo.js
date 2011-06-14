@@ -6,7 +6,7 @@
 // @include       http://book.douban.com/subject/*
 // @description  分享豆瓣条目至新浪微博
 // @author 	xydonkey, +C
-// @version	0.5
+// @version	0.5.1
 // under GPL 3.0 Lisence.
 // ==/UserScript==
 
@@ -85,7 +85,7 @@ function getLink(link){
 
 //分享按钮的html代码
 function getSharingHtml(url, alt, img){
-    return '&nbsp;<a target="_blank" href=\"' +getLink(url)+ '"> <img src="' + img + '" alt="' + alt + '" title="'+alt+'" rel="v:image"></a>';
+    return '<a target="_blank" href=\"' +getLink(url)+ '"> <img src="' + img + '" alt="' + alt + '" title="'+alt+'" rel="v:image"></a>&nbsp;';
 }
 
 var param = {
