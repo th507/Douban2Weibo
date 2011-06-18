@@ -66,7 +66,7 @@ function generateWeiBo(){
 
 //封面地址
 function getCover(){
-    return document.getElementById('mainpic').firstChild.innerHTML.replace(/.*src=\"(.*?)\".*/,"$1").replace("/mpic/","/lpic/").replace(/^\s+|\s+$/g,"");
+    return document.getElementById('mainpic').firstChild.innerHTML.replace(/^\s*.*src=\"(.*?)\".*\s*$/,"$1").replace("/mpic/","/lpic/");
 }
 
 //组成参数串
