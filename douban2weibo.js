@@ -6,7 +6,7 @@
 // @include       http://book.douban.com/subject/*
 // @description  分享豆瓣条目至新浪微博
 // @author 	xydonkey, +C
-// @version	0.5.1
+// @version	0.5.2
 // under GPL 3.0 Lisence.
 // ==/UserScript==
 
@@ -66,7 +66,7 @@ function generateWeiBo(){
 
 //封面地址
 function getCover(){
-    return document.getElementById('mainpic').firstChild.href;
+    return document.getElementById('mainpic').firstChild.innerHTML.replace(/.*src=\"(.*?)\".*/,"$1").replace("/mpic/","/lpic/").replace(/^\s+|\s+$/g,"");
 }
 
 //组成参数串
