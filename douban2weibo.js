@@ -6,7 +6,7 @@
 // @include       http://book.douban.com/subject/*
 // @description  分享豆瓣条目至新浪微博
 // @author 	xydonkey, +C
-// @version	0.5.2
+// @version	0.5.3
 // under GPL 3.0 Lisence.
 // ==/UserScript==
 
@@ -88,11 +88,15 @@ function getSharingHtml(url, alt, img){
     return '<a target="_blank" href=\"' +getLink(url)+ '"> <img src="' + img + '" alt="' + alt + '" title="'+alt+'" rel="v:image"></a>&nbsp;';
 }
 
+url = location.href;
+text = generateWeiBo();
+pic = getCover();
+
 var param = {
-	url:	location.href,
+	url:	url,
 	type:	'3',
-	title:	generateWeiBo(),
-	pic:   	getCover(),
+	title:	text,
+	pic:   	pic,
 	appkey: '3273825921',
 	rnd:	new Date().valueOf()
 }
@@ -101,24 +105,24 @@ share2Weibo.innerHTML =getSharingHtml("http://service.weibo.com/share/share.php?
 
 // Google Buzz 
 param = {
-	url:		location.href,
-	message:	generateWeiBo(),
-	imageurl:   	getCover()
+	url:		url,
+	message:	text,
+	imageurl:   	pic
 }
 share2Weibo.innerHTML +=getSharingHtml("https://www.google.com/buzz/post?", "分享至Google Buzz", "http://code.google.com/apis/buzz/images/google-buzz-16x16.png");
 
 // Twitter
 param={
-	url: location.href,
-	text: generateWeiBo()
+	url: url,
+	text: text
 }
 share2Weibo.innerHTML +=getSharingHtml("http://twitter.com/share?", "分享至Twitter", "https://si0.twimg.com/images/dev/cms/intents/bird/bird_blue/bird_16_blue.png");
 
 // Follow5
 param = {
-    url: location.href,
-    title: generateWeiBo(),
-    picurl: getCover()
+    url: url,
+    title: text,
+    picurl: pic
 }
 share2Weibo.innerHTML +=getSharingHtml("http://www.follow5.com/f5/discuz/sharelogin.jsp?", "分享至Follow5", "http://www.follow5.com/f5/scfe/common/imgs/plugin/5button/16.gif");
 
