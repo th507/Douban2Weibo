@@ -46,7 +46,7 @@ function getRating(){
 //短评
 function getComment(){
     if($("#interest_sect_level").firstChild.tagName=='DIV')
-        return '\"' + $("#interest_sect_level").firstChild.lastChild.textContent.replace(/^\s+|\s+$/g,"") + '\"';//regular expression use to right trim
+        return '「' + $("#interest_sect_level").firstChild.lastChild.textContent.replace(/^\s+|\s+$/g,"") + '」';  //regular expression use to right trim
     else
         return '';
 }
@@ -61,7 +61,7 @@ function getState(){
 
 //组装微博内容
 function generateWeiBo(){
-    return getState()+"《"+getTitle()+"》" +getRating()+ getComment();
+    return getState() + '「' + getTitle() + '」' + getRating() + getComment();
 }
 
 //封面地址
