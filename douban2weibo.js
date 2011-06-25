@@ -6,7 +6,7 @@
 // @include       http://book.douban.com/subject/*
 // @description  分享豆瓣条目至新浪微博
 // @author 	xydonkey, +C
-// @version	0.5.3
+// @version	0.5.4
 // under GPL 3.0 Lisence.
 // ==/UserScript==
 
@@ -45,10 +45,10 @@ function getRating(){
 
 //短评
 function getComment(){
-    if($("#interest_sect_level").firstChild.tagName=='DIV')
-        return '「' + $("#interest_sect_level").firstChild.lastChild.textContent.replace(/^\s+|\s+$/g,"") + '」';  //regular expression use to right trim
-    else
+    comment = $("#interest_sect_level").firstChild.lastChild.textContent.replace(/^\s+|\s+$/g,"");  //regular expression use to right trim
+    if(comment=='')
         return '';
+    return '「' + comment + '」';
 }
 
 //状态，想读、在读、读过
@@ -66,7 +66,7 @@ function generateWeiBo(){
 
 //封面地址
 function getCover(){
-    return document.getElementById('mainpic').firstChild.innerHTML.replace(/^\s*.*src=\"(.*?)\".*\s*$/,"$1").replace("/mpic/","/lpic/");
+    return $('#mainpic').firstChild.innerHTML.replace(/^\s*.*src=\"(.*?)\".*\s*$/,"$1").replace("/mpic/","/lpic/");
 }
 
 //组成参数串
