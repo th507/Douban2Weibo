@@ -5,6 +5,7 @@
 // @include       http://music.douban.com/subject/*
 // @include       http://book.douban.com/subject/*
 // @include       http://www.douban.com/photos/photo/*
+// @include       http://www.douban.com/note/*
 // @description  分享豆瓣条目至新浪微博
 // @author 	xydonkey, +C
 // @version	0.5.5
@@ -31,10 +32,10 @@ function $(select){
 
 //题目
 function getTitle(){
-  if ($('.mainphoto'))
-      return $('.photo_descri')[0].children[0].textContent;
-  else
-      return document.title.replace(/\ \(豆瓣\)/, "");
+    if (/photos/.test(location.href) && $('.photo_descri')[0].children[0].textContent) {
+	return $('.photo_descri')[0].children[0].textContent;
+    } else
+	return document.title.replace(/\ \(豆瓣\)/, "");
 }
 
 //评分：力荐、推荐、还行、较差、很差、默认值是空(句号)
@@ -63,7 +64,8 @@ function getComment(){
 function getState(){
     if ($("#interest_sect_level") && $("#interest_sect_level").firstChild.tagName=="DIV")
         return $("#interest_sect_level").firstChild.firstChild.innerHTML;
-    else if ($('.mainphoto')) return '豆瓣相册：';
+    else if (/photos/.test(location.href)) return '分享豆瓣相册：';
+    else if (/note/.test(location.href)) return '分享豆瓣日记：';
     else 
         return '';
 }
@@ -77,7 +79,7 @@ function generateWeiBo(){
 function getCover(){
     if ($('#mainpic'))
 	return $('#mainpic').children[0].innerHTML.replace(/^\s*.*src=\"(.*?)\".*\s*$/,"$1").replace("/mpic/","/lpic/");
-    else if ($('.mainphoto'))
+    else if (/photos/.test(location.href))
 	return $('.mainphoto')[0].children[0].innerHTML.replace(/^\s*.*src=\"(.*?)\".*\s*$/,"$1");
     else
 	return '';
@@ -136,7 +138,7 @@ param={
 	url: url,
 	text: text
 };
-share2Weibo.innerHTML +=getSharingHtml("http://twitter.com/share?", "分享至Twitter", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDowNTgwMTE3NDA3MjA2ODExQTQxQUNFN0NCOEMyNEMzNiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo3NUYyNkE5MDQ5QzYxMUUwQTJGN0YyQzFDMzFCQjZCMyIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo3NUYyNkE4RjQ5QzYxMUUwQTJGN0YyQzFDMzFCQjZCMyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkFGREYyRDc2MTIyMDY4MTFBNDFBQ0U3Q0I4QzI0QzM2IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjA1ODAxMTc0MDcyMDY4MTFBNDFBQ0U3Q0I4QzI0QzM2Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+6mUHuwAAAmhJREFUeNqkU0toU0EUvTPz8j5JXkhMGvMRE1riSmw3NQZE0pUfNAvFRVeNIChWrJ+FK6laijs/WHVTWhBx4aZFkEIXWnGpmLqo+AFJqzSBQBOtTdN83njnJSlRuhByeffNe8Pce+459w7hnEM7RqFNI77B2/9xiuLDkkBZGLgBvFa9LtZGBUQcCOPLuXWNDKhinWQO96Ti6rhyPLanislaKBACkaB3N7Xqearap4gkJwViE5nKWpI5PUlpmw9Ad9uff8mNgEWOm8BozB49DAujp8t+t8v1JlNMcEk+CZReBA4aYWxOc7lfEN2jU80GIFnMIDvjgY3S+hNBg4JhQODyo/Tiyu9xyaZTgWTxBJ2SyzuMZadqqiNAFK2pA4hEFcW2H/fiwKQks+89CCLJ9PnEry6n6nj5Y62by5pEZEVw96EDYRIIqiYrXA0OFuA8GQ13pOpkcRYClx4WcoXVByEbfFMYLSF3E42IshvBDWHAqdsKXTt86XwZAlJ9kwOvVmAgGlkaiMJI/PHb0e/r0LkpZotx5J3odM3c6IvM4m+a+C/cv4PTeA+MWlq0jFl1OLqv++lsptxvlv53NOhQKcyfifUFr07M83IJ6PCJ+FeLzfEa25iiivYKheEzn7P9zUFpNRmM0s0D4XERbBRXgVc2gCC6bym/durs1LtjC7lijFhk7L2K3GWcErqJ7FVp9los+OzIru23AkNjWV6r1BXxD43B8t1BFb8PvV/+GZ/4kOn5uFIKmcJhYMghZ3t99sVzvTvn8Mw0ip3llbKpm5ngn9soxrkHPdyylxVioX/a8pq0e53/CDAAjXrI68wuXKYAAAAASUVORK5CYII%3D");
+share2Weibo.innerHTML +=getSharingHtml("https://twitter.com/share?", "分享至Twitter", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDowNTgwMTE3NDA3MjA2ODExQTQxQUNFN0NCOEMyNEMzNiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo3NUYyNkE5MDQ5QzYxMUUwQTJGN0YyQzFDMzFCQjZCMyIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo3NUYyNkE4RjQ5QzYxMUUwQTJGN0YyQzFDMzFCQjZCMyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkFGREYyRDc2MTIyMDY4MTFBNDFBQ0U3Q0I4QzI0QzM2IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjA1ODAxMTc0MDcyMDY4MTFBNDFBQ0U3Q0I4QzI0QzM2Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+6mUHuwAAAmhJREFUeNqkU0toU0EUvTPz8j5JXkhMGvMRE1riSmw3NQZE0pUfNAvFRVeNIChWrJ+FK6laijs/WHVTWhBx4aZFkEIXWnGpmLqo+AFJqzSBQBOtTdN83njnJSlRuhByeffNe8Pce+459w7hnEM7RqFNI77B2/9xiuLDkkBZGLgBvFa9LtZGBUQcCOPLuXWNDKhinWQO96Ti6rhyPLanislaKBACkaB3N7Xqearap4gkJwViE5nKWpI5PUlpmw9Ad9uff8mNgEWOm8BozB49DAujp8t+t8v1JlNMcEk+CZReBA4aYWxOc7lfEN2jU80GIFnMIDvjgY3S+hNBg4JhQODyo/Tiyu9xyaZTgWTxBJ2SyzuMZadqqiNAFK2pA4hEFcW2H/fiwKQks+89CCLJ9PnEry6n6nj5Y62by5pEZEVw96EDYRIIqiYrXA0OFuA8GQ13pOpkcRYClx4WcoXVByEbfFMYLSF3E42IshvBDWHAqdsKXTt86XwZAlJ9kwOvVmAgGlkaiMJI/PHb0e/r0LkpZotx5J3odM3c6IvM4m+a+C/cv4PTeA+MWlq0jFl1OLqv++lsptxvlv53NOhQKcyfifUFr07M83IJ6PCJ+FeLzfEa25iiivYKheEzn7P9zUFpNRmM0s0D4XERbBRXgVc2gCC6bym/durs1LtjC7lijFhk7L2K3GWcErqJ7FVp9los+OzIru23AkNjWV6r1BXxD43B8t1BFb8PvV/+GZ/4kOn5uFIKmcJhYMghZ3t99sVzvTvn8Mw0ip3llbKpm5ngn9soxrkHPdyylxVioX/a8pq0e53/CDAAjXrI68wuXKYAAAAASUVORK5CYII%3D");
 
 // Follow5
 // http://www.follow5.com/f5/scfe/common/imgs/plugin/5button/16.gif
@@ -148,7 +150,6 @@ param = {
 share2Weibo.innerHTML +=getSharingHtml("http://www.follow5.com/f5/discuz/sharelogin.jsp?", "分享至Follow5", "data:image/gif;base64,R0lGODlhEAAQAPcAANXW1vz8/GtlV4+LgLWzq+jo6NHR0G1oWkpGOvr6+pGNg1JMPd7d3YmFeeXk4sHBwWhiVMvJxaWhmVpWS/b29mJdTlpUREI+M4SEgvT09MzMzHl5d5eTiSolGnJuYJeXl1JPRI6Ninp2akU+LK2trTk2LWFbTV1aUdrZ1qOjokQ9K01IPX56bTQtHbq6uuLi4vDw8ElCMXFrXoyIfWhnYlZQQEtJQXZ1dF5YSt3c2GReTz02JdnZ2fPy8729ve7u7pqamkI7Ke3t61ROPsHBvrGxsUA5J+Hg3b67tYJ9ckxFNIaCdmtmV7q3sKmoplBKOcXExPT08ru5sqGdlD87Mebm5cG+uOTk5GpmW6uookVBNl5YSNLQzLW1tkE6KJSQhfb29J2dnDgyITYwIOzs7D84JkhBL5+emp6bkXNybjcxH1VTTGxqZsXDvurq63t7eNnX0z45LnVwY2VgVJKRkPHw76qpqkM8KUZCOtDOycfFv1pXU2FcTUE8MF1YSbGvp1ZRQ2VgUDIuJGllXU5IN19ZSlBKPTozIzw1I1lTQ/7+/mVfUGZhUlhSQmJcTWNdTmNeT2BaS2ReUGZgUWBbS1tVRlxWRl1XR1tWRmdgUl1YR/n5+WRfUEpDMmdiU2dhUlxWR/j4+FhRQWNfT11WR+Hi4vn5+ICAfpuXjl5cV+np6WZhU////urp5/7+/2dhU+3t7l9aTODf3Pv7+/n4+Pn5+nBva1dSQ/79/nlzZtfX11lURvPz81tWRZaVk2NeUGFeV8nGwdzc3GVfUVhSQfX19SQfE/X19FhSQ1lSQllTQri3t6+vsJyYj8fGwOrp6Orp6uvr6mhhUy8qHGZgUmJgWt/f4Hp3cL+9uPf392FcTklEOFdSRPHx8fLx8Kilno+Pjr68tf39/cvKyufn58vLzFxXRsPAu7OztFZPP0A5KM/P0EI7KqysrFlXUGFbTFlTRdTU02xnXIiHg+/u7ODg4OPi4K2rp6ypoWBeWGZkYk1GNV5YSVdRQf///0M8KiwAAAAAEAAQAAAImwBrCBxIsGCNRAgRlljIkFDCRJgiYurjz5+iihUtSOTHkV81jBiddeT3ruQ7Zv6wmVxZEpJLTi8UNUBAZdcvlzgn6fw0S9ELjER0CmVCNBZGKXkqoiBK9J/TfxGQeHE6p+KIp1hVYD1UkRBWpx16GHraomKNr/+2KRI39d+GikbQ/rNYDAOJigPk/utkCmQDvU/LdPoXBLDhpwEBADs%3D");
 
 // add sharing link to page
-
 if ($('#rating')){
     var add = $('#rating')
 }
