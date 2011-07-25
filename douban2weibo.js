@@ -4,6 +4,7 @@
 // @include       http://movie.douban.com/subject/*
 // @include       http://music.douban.com/subject/*
 // @include       http://book.douban.com/subject/*
+// @include       http://www.douban.com/photos/photo/*
 // @description  分享豆瓣条目至新浪微博
 // @author 	xydonkey, +C
 // @version	0.5.4
@@ -30,7 +31,7 @@ function $(select){
 
 //题目
 function getTitle(){
-	return $("/h1")[0].firstElementChild.innerHTML;
+	return document.title.replace(/\ \(豆瓣\)/, "");
 }
 
 //评分：力荐、推荐、还行、较差、很差、默认值是空(句号)
@@ -39,24 +40,29 @@ function getRating(){
     if ($("#n_rating")){
         var rate=$("#n_rating").value;
         return rateword=ratingTable[rate];
-    } else
+    }
+    else
         return '';
 }
 
 //短评
 function getComment(){
+  if ($("#interest_sect_level")) {
     comment = $("#interest_sect_level").firstChild.lastChild.textContent.replace(/^\s+|\s+$/g,"");  //regular expression use to right trim
     if(comment=='')
         return '';
     return '「' + comment + '」';
+  }
+  else return '';
 }
 
 //状态，想读、在读、读过
 function getState(){
-    if ($("#interest_sect_level").firstChild.tagName=="DIV")
+    if ($("#interest_sect_level") && $("#interest_sect_level").firstChild.tagName=="DIV")
         return $("#interest_sect_level").firstChild.firstChild.innerHTML;
-    else
-        return "";
+    else if ($('.mainphoto')) return '豆瓣相册：';
+    else 
+        return '';
 }
 
 //组装微博内容
@@ -66,15 +72,21 @@ function generateWeiBo(){
 
 //封面地址
 function getCover(){
-    return $('#mainpic').children[0].innerHTML.replace(/^\s*.*src=\"(.*?)\".*\s*$/,"$1").replace("/mpic/","/lpic/");
+    if ($('#mainpic'))
+	return $('#mainpic').children[0].innerHTML.replace(/^\s*.*src=\"(.*?)\".*\s*$/,"$1").replace("/mpic/","/lpic/");
+    else if ($('.mainphoto'))
+	return $('.mainphoto')[0].children[0].innerHTML.replace(/^\s*.*src=\"(.*?)\".*\s*$/,"$1");
+    else
+	return '';
 }
-
+ 
 //组成参数串
 function addParam(param){
     var temp=[];
     for( var p in param ){
         temp.push(p + '=' + encodeURIComponent( param[p] || '' ) )
     }
+
     return temp;
 }
 
@@ -99,23 +111,24 @@ var param = {
 	pic:   	pic,
 	appkey: '3273825921',
 	rnd:	new Date().valueOf()
-}
+};
+
 var share2Weibo = document.createElement('div');
-share2Weibo.innerHTML =getSharingHtml("http://service.weibo.com/share/share.php?", "分享至新浪微博", "http://www.sinaimg.cn/blog/developer/wiki/16x16.png");
+share2Weibo.innerHTML = getSharingHtml("http://service.weibo.com/share/share.php?", "分享至新浪微博", "http://www.sinaimg.cn/blog/developer/wiki/16x16.png");
 
 // Google Buzz 
 param = {
 	url:		url,
 	message:	text,
 	imageurl:   	pic
-}
+};
 share2Weibo.innerHTML +=getSharingHtml("https://www.google.com/buzz/post?", "分享至Google Buzz", "http://code.google.com/apis/buzz/images/google-buzz-16x16.png");
 
 // Twitter
 param={
 	url: url,
 	text: text
-}
+};
 share2Weibo.innerHTML +=getSharingHtml("http://twitter.com/share?", "分享至Twitter", "https://si0.twimg.com/images/dev/cms/intents/bird/bird_blue/bird_16_blue.png");
 
 // Follow5
@@ -123,12 +136,18 @@ param = {
     url: url,
     title: text,
     picurl: pic
-}
+};
 share2Weibo.innerHTML +=getSharingHtml("http://www.follow5.com/f5/discuz/sharelogin.jsp?", "分享至Follow5", "http://www.follow5.com/f5/scfe/common/imgs/plugin/5button/16.gif");
 
 // add sharing link to page
+
 if ($('#rating')){
     var add = $('#rating')
-} else
+}
+else if ($('.sns-bar-fav')){
+    var add = $('.sns-bar-fav')[0];
+}
+else if ($('#interest_sect_level')){
     var add = $('#interest_sect_level');
+}
 var htmlContent =  add.appendChild(share2Weibo);
