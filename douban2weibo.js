@@ -12,6 +12,7 @@
 // under GPL 3.0 Lisence.
 // ==/UserScript==
 
+url = location.href;
 // 自造 selector
 function $$(w){
 	return document.querySelectorAll(w);
@@ -32,7 +33,8 @@ function $(select){
 
 //题目
 function getTitle(){
-    if (/photos/.test(location.href) && $('.photo_descri')[0].children[0].textContent) {
+    if (/movie|music|book/.test(url)) return $("/h1")[0].firstElementChild.innerHTML;
+    else if (/photos/.test(url) && $('.photo_descri')[0].children[0].textContent) {
 	return $('.photo_descri')[0].children[0].textContent;
     } else
 	return document.title.replace(/\ \(豆瓣\)/, "");
@@ -51,8 +53,8 @@ function getRating(){
 
 //短评
 function getComment(){
-  if ($("#interest_sect_level")) {
-    comment = $("#interest_sect_level").firstChild.lastChild.textContent.replace(/^\s+|\s+$/g,"");  //regular expression use to right trim
+    if ($("#interest_sect_level")) {
+	comment = $("#interest_sect_level").firstChild.lastChild.textContent.replace(/^\s+|\s+$/g,"");  //regular expression use to right trim
     if(comment=='')
         return '';
     return '「' + comment + '」';
@@ -64,8 +66,8 @@ function getComment(){
 function getState(){
     if ($("#interest_sect_level") && $("#interest_sect_level").firstChild.tagName=="DIV")
         return $("#interest_sect_level").firstChild.firstChild.innerHTML;
-    else if (/photos/.test(location.href)) return '分享豆瓣相册：';
-    else if (/note/.test(location.href)) return '分享豆瓣日记：';
+    else if (/photos/.test(url)) return '分享豆瓣相册：';
+    else if (/note/.test(url)) return '分享豆瓣日记：';
     else 
         return '';
 }
@@ -79,7 +81,7 @@ function generateWeiBo(){
 function getCover(){
     if ($('#mainpic'))
 	return $('#mainpic').children[0].innerHTML.replace(/^\s*.*src=\"(.*?)\".*\s*$/,"$1").replace("/mpic/","/lpic/");
-    else if (/photos/.test(location.href))
+    else if (/photos/.test(url))
 	return $('.mainphoto')[0].children[0].innerHTML.replace(/^\s*.*src=\"(.*?)\".*\s*$/,"$1");
     else
 	return '';
@@ -105,7 +107,7 @@ function getSharingHtml(url, alt, img){
     return '<a target="_blank" href=\"' +getLink(url)+ '"> <img src="' + img + '" alt="' + alt + '" title="'+alt+'" rel="v:image"></a>&nbsp;';
 }
 
-url = location.href;
+
 text = generateWeiBo();
 pic = getCover();
 
@@ -153,7 +155,7 @@ share2Weibo.innerHTML +=getSharingHtml("http://www.follow5.com/f5/discuz/sharelo
 if ($('#rating')){
     var add = $('#rating')
 }
-else if ($('.sns-bar-fav')){
+else if ($('.sns-bar-fav')[0]){
     var add = $('.sns-bar-fav')[0];
 }
 else if ($('#interest_sect_level')){
